@@ -1,6 +1,15 @@
-users post likh paaenge
+users post thoughts
 login and register
 logout
 post creation
 post like
 post delete
+
+future implementations --
+-followers/following system
+-notification system for every like , comments and follow
+-post publish animations
+-profile edit page for updating name,age,mobile number,password etc..
+-fetch system to remove reloading everytime a event is occur
+-photo uploads
+-comments section under each posts 

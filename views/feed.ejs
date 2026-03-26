@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Threadline — Your Feed</title>
+    <title>Zenvyra — Your Feed</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <script src="https://cdn.tailwindcss.com"></script>
     <link
@@ -273,7 +273,7 @@
 
         .post-btn:hover {
             transform: translateY(-1px);
-            box-shadow: 0 6px 20px rgba(232, 255, 71, 0.25);
+            box-shadow: 0 6px 20px rgba(255, 249, 71, 0.25);
         }
 
         /* ── POSTS SECTION ── */
@@ -499,7 +499,12 @@
             <div class="avatar">
                 <%= user.name.charAt(0).toUpperCase() %>
             </div>
-            <a href="/logout" class="logout-btn">Logout</a>
+            <a href="/logout" class="logout-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                    <polyline points="16 17 21 12 16 7" />
+                    <line x1="21" y1="12" x2="9" y2="12" />
+                </svg>Logout</a>
         </div>
     </nav>
 
@@ -520,12 +525,12 @@
                         <div class="compose-avatar">
                             <%= user.name.charAt(0).toUpperCase() %>
                         </div>
-                        <textarea name="content" placeholder="Share something..." required></textarea>
+                        <textarea name="content" placeholder="Share a thought, a story, an idea..." required></textarea>
                     </div>
 
                     <div class="compose-bottom">
-                        <span>@<%= user.username %></span>
-                        <button type="submit" class="post-btn">Post</button>
+                        <span class="compose-meta">@<%= user.username %></span>
+                        <button type="submit" class="post-btn">Publish</button>
                     </div>
                 </form>
             </div>
