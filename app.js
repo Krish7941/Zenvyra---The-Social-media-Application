@@ -15,13 +15,24 @@ app.use(cookieParser());
 app.get('/register', (req, res) => {
     res.render("index.ejs");
 });
-app.get('/login', (req, res) => {
-    res.render("login.ejs");
+app.get('/login', async (req, res) => {
+    let totalPosts = await postModel.countDocuments();
+    let activeWriters = await userModel.countDocuments({posts: {$exists: true, $not: {$size: 0}}});
+    res.render("login.ejs", { totalPosts, activeWriters });
+});
+
+app.get('/feed', isLoggedIn, async (req, res) => {
+    let posts = await postModel.find()
+        .populate("user")   // kisne post kiya
+        .sort({ _id: -1 }); // latest first
+
+    let user = await userModel.findOne({ email: req.user.email });
+    res.render("feed", { posts, user, activePage: "feed" });
 });
 
 app.get('/profile', isLoggedIn , async (req, res) => {
     let user = await userModel.findOne({email: req.user.email}).populate("posts");
-    res.render("profile", {user});
+    res.render("profile", {user, activePage: "profile"});
 });
 
 app.get('/like/:id', isLoggedIn , async (req, res) => {
@@ -81,7 +92,7 @@ app.post('/register', async (req, res) => {
             })
             let token = jwt.sign({email:email , userid: user._id},"shhh");
             res.cookie("token", token);
-            res.send("User registered successfully").redirect("/profile");
+            res.redirect("/login");
         });
     });
 });
