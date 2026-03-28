@@ -6,11 +6,15 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const postModel = require('./models/post');
 const user = require('./models/user');
+const crypto = require('crypto');
+const path = require('path');
+const upload = require('./utils/multer');
 
 app.set('view engine', 'ejs');
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/register', (req, res) => {
     res.render("index.ejs");
@@ -35,6 +39,17 @@ app.get('/profile', isLoggedIn , async (req, res) => {
     res.render("profile", {user, activePage: "profile"});
 });
 
+app.get('/profile/upload', async (req, res) => {
+    res.render('profileUpload.ejs');
+});
+
+app.post('/upload', isLoggedIn,upload.single("image"),async (req, res) => {
+    let user = await userModel.findOne({email: req.user.email});
+    user.profilepic = req.file.filename;
+    await user.save();
+    res.redirect("/profile");
+});
+
 app.get('/like/:id', isLoggedIn , async (req, res) => {
     let post = await postModel.findById(req.params.id).populate("user");
     if(post.likes.indexOf(req.user.userid) === -1){
@@ -45,8 +60,10 @@ app.get('/like/:id', isLoggedIn , async (req, res) => {
     }
 
     await post.save();
-    res.redirect("/profile");    
+    res.redirect("/feed");    
 });
+
+
 
 app.get('/edit/:id', isLoggedIn , async (req, res) => {
     let post = await postModel.findById(req.params.id).populate("user");
@@ -71,7 +88,7 @@ app.post('/post', isLoggedIn , async (req, res) => {
     
     user.posts.push(post._id);
     await user.save();
-    return res.redirect("/profile");
+    return res.redirect("/feed");
 });
 
 app.post('/register', async (req, res) => {
@@ -107,7 +124,7 @@ app.post('/login', async (req, res) => {
         if(result){
             let token = jwt.sign({email:email , userid: user._id},"shhh");
             res.cookie("token", token);
-            res.status(200).redirect("/profile");
+            res.status(200).redirect("/feed");
         }
         else{
             res.redirect("/login");

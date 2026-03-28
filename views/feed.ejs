@@ -113,7 +113,6 @@
         .avatar {
             width: 34px;
             height: 34px;
-            background: linear-gradient(135deg, var(--accent), var(--accent2));
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -122,6 +121,8 @@
             font-weight: 700;
             color: #0a0a0f;
             cursor: pointer;
+            object-fit: cover;
+            overflow: hidden;
         }
 
         .logout-btn {
@@ -341,6 +342,7 @@
             font-weight: 700;
             color: white;
             flex-shrink: 0;
+            overflow : hidden;
         }
 
         .post-meta h4 {
@@ -496,9 +498,11 @@
         </div>
 
         <div class="nav-right">
-            <div class="avatar">
-                <%= user.name.charAt(0).toUpperCase() %>
-            </div>
+            <a href="/profile/upload">
+                <div class="avatar">
+                    <img class="object-cover w-full h-full" src="/images/uploads/<%= user.profilepic %>" alt="">
+                </div>
+            </a>
             <a href="/logout" class="logout-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2">
                     <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
@@ -530,7 +534,7 @@
 
                     <div class="compose-bottom">
                         <span class="compose-meta">@<%= user.username %></span>
-                        <button type="submit" class="post-btn">Publish</button>
+                        <button type="submit" class="post-btn">Publish →</button>
                     </div>
                 </form>
             </div>
@@ -559,7 +563,7 @@
                                 <!-- USER INFO -->
                                 <div class="post-top">
                                     <div class="post-avatar">
-                                        <%= post.user.name.charAt(0).toUpperCase() %>
+                                        <img class="object-cover w-full h-full" src="/images/uploads/<%= post.user.profilepic %>" alt="">
                                     </div>
 
                                     <div class="post-meta">
@@ -580,13 +584,13 @@
                                 <div class="post-footer">
                                     <div class="action-group">
 
-                                        <a href="/like/<%= post._id %>" class="like-btn">
-                                            Like
-                                        </a>
-
-                                        <span class="like-count">
-                                            <%= post.likes.length %>
-                                        </span>
+                                        <a href="/like/<%= post._id %>" class="like-btn <%= post.likes && post.likes.indexOf(user._id.toString()) !== -1 ? 'liked' : '' %>">
+                                        <svg viewBox="0 0 24 24" fill="<%= post.likes && post.likes.indexOf(user._id.toString()) !== -1 ? '#ff6b47' : 'none' %>" stroke="currentColor" stroke-width="2">
+                                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                                        </svg>
+                                        <%= post.likes && post.likes.indexOf(user._id.toString()) !== -1 ? 'Unlike' : 'Like' %>
+                                    </a>
+                                    <span class="like-count"><%= post.likes ? post.likes.length : 0 %></span>
 
                                     </div>
 
